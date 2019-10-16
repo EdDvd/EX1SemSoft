@@ -45,4 +45,36 @@ router.post('/new', function(req, res){
    }
 });// fin del post
 
+
+router.put('/update/:id',
+  function(req, res){
+      galeria = fileModel.getFoto();
+      var picIdToModify = req.params.id;
+      var cambiarTitulo = req.body.nuevoTitulo;
+      var cambiarUrl = req.body.nuevoUrl;
+      var cambiarThumb=req.body.nuevoThumb;
+      var modFoto = {};
+      var newFotoArray = galeria.map(
+        function(o,i){
+          if( picIdToModify === o.id){
+
+             modFoto = Object.assign({}, o);
+          }
+          return o;
+        }
+      ); // end map
+    galeria = newFotoArray;
+    fileModel.setFoto(
+    galeria,
+      function (err, savedSuccesfully) {
+        if (err) {
+          res.status(400).json({ "error": "No se pudo actualizar objeto" });
+        } else {
+          res.json(modFoto);  // req.body ===  $_POST[]
+        }
+      }
+    );
+  }
+);
+
 module.exports=router;
